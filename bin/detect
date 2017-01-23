@@ -1,4 +1,4 @@
 #!/bin/bash
 
-echo "PIP_* Variables"
+echo "Env"
 exit 0
