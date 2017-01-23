@@ -9,7 +9,8 @@ export_env_dir() {
     for f in "$env_dir"/*; do
       e=$(basename "$f")
       echo "$e" | grep -E "$whitelist_regex" | grep -qvE "$blacklist_regex" &&
-      export "$e=$(cat "$env_dir/$e")"
+      export "$e=$(cat "$env_dir/$e")" &&
+      echo "$e variable exported"
       :
     done
   fi
