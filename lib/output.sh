@@ -1,3 +1,3 @@
-indent() {
-  sed -u 's/^/       /'
+info() {
+    echo "       $*" || true
 }

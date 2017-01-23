@@ -17,7 +17,7 @@ export_env_dir() {
       e=$(basename "$f")
       echo "$e" | grep -E "$whitelist_regex" | grep -qvE "$blacklist_regex" &&
       echo "export $e=$(cat "$env_dir/$e")" >> "$bp_dir/export" &&
-      echo "$e variable exported"
+      info "$e variable exported"
       :
     done
   fi
@@ -26,4 +26,4 @@ export_env_dir() {
 # BUILD_DIR="${1:-}"
 ENV_DIR="${3:-}"
 
-export_env_dir "$ENV_DIR" "$BUILDPACK_DIR" '^PIP_.*' | indent
+export_env_dir "$ENV_DIR" "$BUILDPACK_DIR" '^PIP_.*'
