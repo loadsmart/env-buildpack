@@ -1,0 +1,3 @@
+#!/bin/bash
+
+# This file exists only to test the buildpack with https://github.com/heroku/heroku-buildpack-testrunner
