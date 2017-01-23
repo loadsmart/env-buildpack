@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "PIP_* Variables"
+exit 0
