@@ -21,17 +21,27 @@ getVariablesToExport() {
 }
 
 exportVariables() {
-    local buildpack_dir="$1"
+    local build_dir="$1"
     local env_dir="$2"
     local variables_to_export="$3"
 
     local IFS=':'
     for env_name in ${variables_to_export}; do
         if [ ! -z "$env_name" ]; then
-            echo "export ${env_name}=$(cat "$env_dir/$env_name")" >> "$buildpack_dir/export" &&
-                info "Variable ${env_name} exported"
+            exportVariable "$build_dir" "$env_dir" "$env_name"
+            [ "$RETURN" -eq "0" ] && info "Variable ${env_name} exported"
         fi
     done
+}
+
+exportVariable() {
+    local build_dir="$1"
+    local env_dir="$2"
+    local variable_name="$3"
+
+    echo "export ${variable_name}=$(cat "${env_dir}/$variable_name")" >> "${build_dir}/export"
+    # shellcheck disable=SC2034
+    RETURN=$?
 }
 
 canExportVariable() {
