@@ -1,14 +1,12 @@
 #!/bin/bash
 
 CURRENT_DIR="$(dirname "${0:-}")"
-BUILDPACK_DIR="$(cd "$CURRENT_DIR/.." || exit; pwd)"
+BUILDPACK_HOME="$(cd "$CURRENT_DIR/.." || exit; pwd)"
 
-# shellcheck source=lib/output.sh
-source "$BUILDPACK_DIR/lib/environment.sh"
-# shellcheck source=lib/output.sh
-source "$BUILDPACK_DIR/lib/output.sh"
+# shellcheck source=lib/all.sh
+source "$BUILDPACK_HOME/lib/all.sh"
 
 ENV_DIR="${3:-}"
 
 variables_to_export=$(getVariablesToExport "$ENV_DIR")
-exportVariables "$BUILDPACK_DIR" "$ENV_DIR" "$variables_to_export"
+exportVariables "$BUILDPACK_HOME" "$ENV_DIR" "$variables_to_export"
