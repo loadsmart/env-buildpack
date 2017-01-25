@@ -13,6 +13,10 @@ afterSetUp() {
 RANDOM_VARIABLE
 OTHER_VARIABLE
 EOT
+
+    # Populate variables
+    echo "value-a" > "${ENV_DIR}/RANDOM_VARIABLE"
+    echo "value-b" > "${ENV_DIR}/OTHER_VARIABLE"
 }
 
 SKIP_testGetVariablesToExport() {
@@ -27,9 +31,6 @@ SKIP_testGetVariablesToExportWhenControlFileDoesntExist() {
 }
 
 testExportVariables() {
-    echo "value-a" > "${ENV_DIR}/RANDOM_VARIABLE"
-    echo "value-b" > "${ENV_DIR}/OTHER_VARIABLE"
-
     exportVariables "${BUILD_DIR}" "${ENV_DIR}"
 
     assertTrue "export file should exists" "[ -f ${BUILD_DIR}/export ]"
