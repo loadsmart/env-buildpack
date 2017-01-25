@@ -9,17 +9,17 @@
 . "${BUILDPACK_HOME}/lib/output.sh"
 
 
-test_populate_variables_to_export() {
+testGetVariablesToExport() {
     vars=$(getVariablesToExport "${BUILDPACK_HOME}/test/fixtures/env_dir")
     assertEquals ":RANDOM_VARIABLE" "${vars}"
 }
 
-test_populate_variables_to_export_when_control_var_doesnt_exists() {
+testGetVariablesToExportWhenControlVarDoesntExist() {
     vars=$(getVariablesToExport "${BUILDPACK_HOME}/test/fixtures/wrong_env_dir")
     assertEquals "" "${vars}"
 }
 
-test_export_variables() {
+testExportVariables() {
     local buildpack_dir env_dir
     buildpack_dir=$(mktemp -d)
     env_dir=$(mktemp -d)

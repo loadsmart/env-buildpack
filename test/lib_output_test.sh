@@ -9,7 +9,7 @@
 . "${BUILDPACK_HOME}/lib/output.sh"
 
 
-test_info_should_add_7_spaces_at_beginning_of_string()
+testInfoShouldAdd7SpacesAtBeginningOfString()
 {
     capture info sample string
     assertCapturedEquals "       sample string"
