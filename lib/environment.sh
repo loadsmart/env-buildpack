@@ -17,7 +17,7 @@ getVariablesToExport() {
         [ "$RETURN" -eq "0" ] && export_vars="$export_vars:$f"
     done
 
-    echo "${export_vars}"
+    echo "${export_vars#:}"
 }
 
 exportVariables() {

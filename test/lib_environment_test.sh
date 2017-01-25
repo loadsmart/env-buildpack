@@ -16,7 +16,7 @@ EOT
 
 testGetVariablesToExport() {
     vars=$(getVariablesToExport "${BUILDPACK_HOME}/test/fixtures/env_dir" "$BUILD_DIR")
-    assertEquals ":RANDOM_VARIABLE" "${vars}"
+    assertEquals "RANDOM_VARIABLE" "${vars}"
 }
 
 testGetVariablesToExportWhenControlFileDoesntExist() {
