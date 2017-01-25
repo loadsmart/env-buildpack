@@ -4,7 +4,6 @@ getVariablesToExport() {
     local whitelist_regex blacklist_regex
 
     whitelist_regex=$(cat "$env_dir/ENV_BUILDPACK_EXPORT_VARS" 2> /dev/null)
-    blacklist_regex=${4:-'^(PATH|GIT_DIR|CPATH|CPPATH|LD_PRELOAD|LIBRARY_PATH)$'}
 
     if [ ! -n "$whitelist_regex" ]; then
         return
@@ -14,8 +13,8 @@ getVariablesToExport() {
 
     for entry in "$env_dir"/*; do
         f="$(basename "$entry")"
-        echo "$f" | grep -E "$whitelist_regex" | grep -qvE "$blacklist_regex" &&
-            export_vars="$export_vars:$f"
+        canExportVariable "$whitelist_regex" "$f"
+        [ "$RETURN" -eq "0" ] && export_vars="$export_vars:$f"
     done
 
     echo "${export_vars}"
@@ -33,4 +32,14 @@ exportVariables() {
                 info "Variable ${env_name} exported"
         fi
     done
+}
+
+canExportVariable() {
+    local whitelist_regex="$1"
+    local variable_name="$2"
+
+    local blacklist_regex='^(PATH|GIT_DIR|CPATH|CPPATH|LD_PRELOAD|LIBRARY_PATH)$'
+    echo "$variable_name" | grep -E "$whitelist_regex" | grep -qvE "$blacklist_regex"
+    # shellcheck disable=SC2034
+    RETURN=$?
 }
