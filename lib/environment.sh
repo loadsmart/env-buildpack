@@ -1,35 +1,21 @@
-getVariablesToExport() {
-    local env_dir="$1"
-    local build_dir="$2"
+exportVariables() {
+    local build_dir="$1"
+    local env_dir="$2"
 
-    local whitelist_regex export_vars
+    local whitelist_regex
 
     whitelist_regex=$(buildWhitelist "$build_dir")
     if [ ! -n "$whitelist_regex" ]; then
         return
     fi
 
-    export_vars=""
-
     for entry in "$env_dir"/*; do
-        f="$(basename "$entry")"
-        canExportVariable "$whitelist_regex" "$f"
-        [ "$RETURN" -eq "0" ] && export_vars="$export_vars:$f"
-    done
-
-    echo "${export_vars#:}"
-}
-
-exportVariables() {
-    local build_dir="$1"
-    local env_dir="$2"
-    local variables_to_export="$3"
-
-    local IFS=':'
-    for env_name in ${variables_to_export}; do
-        if [ ! -z "$env_name" ]; then
-            exportVariable "$build_dir" "$env_dir" "$env_name"
-            [ "$RETURN" -eq "0" ] && info "Variable ${env_name} exported"
+        variable_name="$(basename "$entry")"
+        canExportVariable "$whitelist_regex" "$variable_name"
+        if [ "$RETURN" -eq "0" ]
+        then
+            exportVariable "$build_dir" "$env_dir" "$variable_name"
+            [ "$RETURN" -eq "0" ] && info "Variable ${variable_name} exported"
         fi
     done
 }
