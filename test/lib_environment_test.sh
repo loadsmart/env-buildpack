@@ -23,6 +23,8 @@ testExportVariableShouldExportOneVariable() {
     exportVariable "${BUILD_DIR}" "${ENV_DIR}" "RANDOM_VARIABLE"
     assertTrue "[ ${RETURN} -eq 0 ]"
 
+    assertTrue "export file should exists" "[ -f ${BUILD_DIR}/export ]"
+
     # Has only one line
     total_lines=$(wc -l "${BUILD_DIR}/export" | tr -s ' ' | cut -f2 -d ' ')
     assertEquals "1" "$total_lines"
@@ -47,6 +49,13 @@ testExportVariables() {
     exportVariables "${BUILD_DIR}" "${ENV_DIR}"
 
     assertTrue "export file should exists" "[ -f ${BUILD_DIR}/export ]"
-    assertTrue "grep 'export RANDOM_VARIABLE=value-a' ${BUILD_DIR}/export > /dev/null"
-    assertTrue "grep 'export OTHER_VARIABLE=value-b' ${BUILD_DIR}/export > /dev/null"
+
+    total_lines=$(wc -l "${BUILD_DIR}/export" | tr -s ' ' | cut -f2 -d ' ')
+    assertEquals "export file should have 2 lines" "2" "$total_lines"
+
+    grep 'export RANDOM_VARIABLE=value-a' "${BUILD_DIR}/export" > /dev/null
+    assertEquals "export file should have export line for RANDOM_VARIABLE" "$?" "0"
+
+    grep 'export OTHER_VARIABLE=value-b' "${BUILD_DIR}/export" > /dev/null
+    assertEquals "export file should have export line for OTHER_VARIABLE" "$?" "0"
 }
