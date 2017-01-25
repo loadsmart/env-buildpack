@@ -23,7 +23,9 @@ testExportVariableShouldExportOneVariable() {
     exportVariable "${BUILD_DIR}" "${ENV_DIR}" "RANDOM_VARIABLE"
     assertTrue "[ ${RETURN} -eq 0 ]"
 
-    assertTrue "export file should exists" "[ -f ${BUILD_DIR}/export ]"
+    EXISTS=0
+    [ -f "${BUILD_DIR}/export" ] && EXISTS=1
+    assertEquals "export file should exist" "1" "$EXISTS"
 
     # Has only one line
     total_lines=$(wc -l "${BUILD_DIR}/export" | tr -s ' ' | cut -f2 -d ' ')
@@ -32,6 +34,16 @@ testExportVariableShouldExportOneVariable() {
     # Has export line
     grep 'export RANDOM_VARIABLE=value-a' "${BUILD_DIR}/export" > /dev/null
     assertEquals "$?" "0"
+}
+
+testExportVariableShouldNotExportVariableWhenVariableDoesntExist() {
+    exportVariable "${BUILD_DIR}" "${ENV_DIR}" "UNKNOWN_VARIABLE"
+
+    assertEquals "wrong return value" "1" "$RETURN"
+
+    EXISTS=0
+    [ -f "${BUILD_DIR}/export" ] && EXISTS=1
+    assertEquals "export file should not exists" "0" "$EXISTS"
 }
 
 SKIP_testGetVariablesToExport() {
@@ -48,7 +60,9 @@ SKIP_testGetVariablesToExportWhenControlFileDoesntExist() {
 testExportVariables() {
     exportVariables "${BUILD_DIR}" "${ENV_DIR}"
 
-    assertTrue "export file should exists" "[ -f ${BUILD_DIR}/export ]"
+    EXISTS=0
+    [ -f "${BUILD_DIR}/export" ] && EXISTS=1
+    assertEquals "export file should exists" "1" "$EXISTS"
 
     total_lines=$(wc -l "${BUILD_DIR}/export" | tr -s ' ' | cut -f2 -d ' ')
     assertEquals "export file should have 2 lines" "2" "$total_lines"
@@ -58,4 +72,13 @@ testExportVariables() {
 
     grep 'export OTHER_VARIABLE=value-b' "${BUILD_DIR}/export" > /dev/null
     assertEquals "export file should have export line for OTHER_VARIABLE" "$?" "0"
+}
+
+testExportVariablesShouldNotCreateExportFileWhenControlFileDoesntExist() {
+    rm -f "${BUILD_DIR}/${ENV_BUILDPACK_CONTROL_FILE}"
+    exportVariables "${BUILD_DIR}" "${ENV_DIR}"
+
+    EXISTS=0
+    [ -f "${BUILD_DIR}/export" ] && EXISTS=1
+    assertEquals "export file should not exists" "0" "$EXISTS"
 }
