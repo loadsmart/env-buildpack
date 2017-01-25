@@ -31,8 +31,7 @@ testExportVariableShouldExportOneVariable() {
     _assertHasManyLines "export should have 1 line" "${BUILD_DIR}/export" "1"
 
     # Has export line
-    grep 'export RANDOM_VARIABLE=value-a' "${BUILD_DIR}/export" > /dev/null
-    assertEquals "$?" "0"
+    _assertFileContains "export file should containt RANDOM_VARIABLE export line" 'export RANDOM_VARIABLE=value-a' "${BUILD_DIR}/export"
 }
 
 testExportVariableShouldNotExportVariableWhenVariableDoesntExist() {
@@ -54,11 +53,8 @@ testExportVariables() {
 
     _assertHasManyLines "export should have 2 lines" "${BUILD_DIR}/export" "2"
 
-    grep 'export RANDOM_VARIABLE=value-a' "${BUILD_DIR}/export" > /dev/null
-    assertEquals "export file should have export line for RANDOM_VARIABLE" "$?" "0"
-
-    grep 'export OTHER_VARIABLE=value-b' "${BUILD_DIR}/export" > /dev/null
-    assertEquals "export file should have export line for OTHER_VARIABLE" "$?" "0"
+    _assertFileContains "export file should have export line for RANDOM_VARIABLE" 'export RANDOM_VARIABLE=value-a' "${BUILD_DIR}/export"
+    _assertFileContains "export file should have export line for OTHER_VARIABLE" 'export OTHER_VARIABLE=value-b' "${BUILD_DIR}/export"
 }
 
 testExportVariablesShouldNotCreateExportFileWhenControlFileDoesntExist() {
@@ -77,4 +73,13 @@ _assertHasManyLines() {
 
     total_lines=$(wc -l "${filename}" | tr -s ' ' | sed -e 's/^ *//' | cut -f1 -d ' ')
     assertEquals "${message}" "${expected}" "${total_lines}"
+}
+
+_assertFileContains() {
+    local message="$1"
+    local content="$2"
+    local filename="$3"
+
+    grep "${content}" "${filename}" > /dev/null 2>&1
+    assertEquals "${message}" "$?" "0"
 }
