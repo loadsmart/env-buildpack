@@ -6,7 +6,8 @@ BUILDPACK_HOME="$(cd "$CURRENT_DIR/.." || exit; pwd)"
 # shellcheck source=lib/all.sh
 source "$BUILDPACK_HOME/lib/all.sh"
 
+BUILD_DIR="${1:-}"
 ENV_DIR="${3:-}"
 
-variables_to_export=$(getVariablesToExport "$ENV_DIR")
+variables_to_export=$(getVariablesToExport "$ENV_DIR" "$BUILD_DIR")
 exportVariables "$BUILDPACK_HOME" "$ENV_DIR" "$variables_to_export"

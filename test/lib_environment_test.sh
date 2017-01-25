@@ -7,13 +7,21 @@
 . "${BUILDPACK_HOME}/lib/all.sh"
 
 
+afterSetUp() {
+    # Create the control file
+    cat > "${BUILD_DIR}/${ENV_BUILDPACK_CONTROL_FILE}" <<EOT
+RANDOM_VARIABLE
+EOT
+}
+
 testGetVariablesToExport() {
-    vars=$(getVariablesToExport "${BUILDPACK_HOME}/test/fixtures/env_dir")
+    vars=$(getVariablesToExport "${BUILDPACK_HOME}/test/fixtures/env_dir" "$BUILD_DIR")
     assertEquals ":RANDOM_VARIABLE" "${vars}"
 }
 
-testGetVariablesToExportWhenControlVarDoesntExist() {
-    vars=$(getVariablesToExport "${BUILDPACK_HOME}/test/fixtures/wrong_env_dir")
+testGetVariablesToExportWhenControlFileDoesntExist() {
+    rm -f "${BUILD_DIR}/${ENV_BUILDPACK_CONTROL_FILE}"
+    vars=$(getVariablesToExport "${BUILDPACK_HOME}/test/fixtures/env_dir" "$BUILD_DIR")
     assertEquals "" "${vars}"
 }
 
@@ -31,6 +39,6 @@ EOF
 )"
 
     exportVariables "$buildpack_dir" "$env_dir" "variable-a:variable-b"
-    assertTrue "export file not created" "[ -f $buildpack_dir/export ]"
+    assertTrue "export file should exists" "[ -f $buildpack_dir/export ]"
     assertEquals "$expected" "$(cat "$buildpack_dir/export")"
 }
