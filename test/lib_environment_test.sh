@@ -19,6 +19,19 @@ EOT
     echo "value-b" > "${ENV_DIR}/OTHER_VARIABLE"
 }
 
+testExportVariableShouldExportOneVariable() {
+    exportVariable "${BUILD_DIR}" "${ENV_DIR}" "RANDOM_VARIABLE"
+    assertTrue "[ ${RETURN} -eq 0 ]"
+
+    # Has only one line
+    total_lines=$(wc -l "${BUILD_DIR}/export" | tr -s ' ' | cut -f2 -d ' ')
+    assertEquals "1" "$total_lines"
+
+    # Has export line
+    grep 'export RANDOM_VARIABLE=value-a' "${BUILD_DIR}/export" > /dev/null
+    assertEquals "$?" "0"
+}
+
 SKIP_testGetVariablesToExport() {
     vars=$(exportVariables "${BUILDPACK_HOME}/test/fixtures/env_dir" "$BUILD_DIR")
     assertEquals "RANDOM_VARIABLE" "${vars}"
