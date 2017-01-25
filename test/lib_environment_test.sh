@@ -46,17 +46,6 @@ testExportVariableShouldNotExportVariableWhenVariableDoesntExist() {
     assertEquals "export file should not exists" "0" "$EXISTS"
 }
 
-SKIP_testGetVariablesToExport() {
-    vars=$(exportVariables "${BUILDPACK_HOME}/test/fixtures/env_dir" "$BUILD_DIR")
-    assertEquals "RANDOM_VARIABLE" "${vars}"
-}
-
-SKIP_testGetVariablesToExportWhenControlFileDoesntExist() {
-    rm -f "${BUILD_DIR}/${ENV_BUILDPACK_CONTROL_FILE}"
-    vars=$(getVariablesToExport "${BUILDPACK_HOME}/test/fixtures/env_dir" "$BUILD_DIR")
-    assertEquals "" "${vars}"
-}
-
 testExportVariables() {
     exportVariables "${BUILD_DIR}" "${ENV_DIR}"
 
