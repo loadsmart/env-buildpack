@@ -1,6 +1,7 @@
 exportVariables() {
-    local build_dir="$1"
-    local env_dir="$2"
+    local buildpack_dir="$1"
+    local build_dir="$2"
+    local env_dir="$3"
 
     local whitelist_regex
 
@@ -14,21 +15,20 @@ exportVariables() {
         canExportVariable "$whitelist_regex" "$variable_name"
         if [ "$RETURN" -eq "0" ]
         then
-            exportVariable "$build_dir" "$env_dir" "$variable_name"
+            exportVariable "$buildpack_dir" "$env_dir" "$variable_name"
             [ "$RETURN" -eq "0" ] && info "Variable ${variable_name} exported"
         fi
     done
 }
 
 exportVariable() {
-    local build_dir="$1"
+    local buildpack_dir="$1"
     local env_dir="$2"
     local variable_name="$3"
 
     [ ! -f "${env_dir}/${variable_name}" ] && RETURN=1 && return
 
-    echo "export ${variable_name}=$(cat "${env_dir}/$variable_name")" >> "${build_dir}/export"
-    echo "export ${variable_name}=$(cat "${env_dir}/$variable_name")"
+    echo "export ${variable_name}=$(cat "${env_dir}/$variable_name")" >> "${buildpack_dir}/export"
     # shellcheck disable=SC2034
     RETURN=$?
 }

@@ -9,4 +9,4 @@ source "$BUILDPACK_HOME/lib/all.sh"
 BUILD_DIR="${1:-}"
 ENV_DIR="${3:-}"
 
-exportVariables "$BUILD_DIR" "$ENV_DIR"
+exportVariables "$BUILDPACK_HOME" "$BUILD_DIR" "$ENV_DIR"

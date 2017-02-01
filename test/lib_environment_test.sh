@@ -17,52 +17,55 @@ EOT
     # Populate variables
     echo "value-a" > "${ENV_DIR}/RANDOM_VARIABLE"
     echo "value-b" > "${ENV_DIR}/OTHER_VARIABLE"
+
+    export EXPORT_FILE="${BUILDPACK_HOME}/export"
+    rm -f "${EXPORT_FILE}"
 }
 
 testExportVariableShouldExportOneVariable() {
-    exportVariable "${BUILD_DIR}" "${ENV_DIR}" "RANDOM_VARIABLE"
+    exportVariable "${BUILDPACK_HOME}" "${ENV_DIR}" "RANDOM_VARIABLE"
     assertTrue "[ ${RETURN} -eq 0 ]"
 
     EXISTS=0
-    [ -f "${BUILD_DIR}/export" ] && EXISTS=1
+    [ -f "${EXPORT_FILE}" ] && EXISTS=1
     assertEquals "export file should exist" "1" "$EXISTS"
 
     # Has only one line
-    _assertHasManyLines "export should have 1 line" "${BUILD_DIR}/export" "1"
+    _assertHasManyLines "export should have 1 line" "${EXPORT_FILE}" "1"
 
     # Has export line
-    _assertFileContains "export file should containt RANDOM_VARIABLE export line" 'export RANDOM_VARIABLE=value-a' "${BUILD_DIR}/export"
+    _assertFileContains "export file should containt RANDOM_VARIABLE export line" 'export RANDOM_VARIABLE=value-a' "${EXPORT_FILE}"
 }
 
 testExportVariableShouldNotExportVariableWhenVariableDoesntExist() {
-    exportVariable "${BUILD_DIR}" "${ENV_DIR}" "UNKNOWN_VARIABLE"
+    exportVariable "${BUILDPACK_HOME}" "${ENV_DIR}" "UNKNOWN_VARIABLE"
 
     assertEquals "wrong return value" "1" "$RETURN"
 
     EXISTS=0
-    [ -f "${BUILD_DIR}/export" ] && EXISTS=1
+    [ -f "${EXPORT_FILE}" ] && EXISTS=1
     assertEquals "export file should not exists" "0" "$EXISTS"
 }
 
 testExportVariables() {
-    exportVariables "${BUILD_DIR}" "${ENV_DIR}"
+    exportVariables "${BUILDPACK_HOME}" "${BUILD_DIR}" "${ENV_DIR}"
 
     EXISTS=0
-    [ -f "${BUILD_DIR}/export" ] && EXISTS=1
+    [ -f "${EXPORT_FILE}" ] && EXISTS=1
     assertEquals "export file should exists" "1" "$EXISTS"
 
-    _assertHasManyLines "export should have 2 lines" "${BUILD_DIR}/export" "2"
+    _assertHasManyLines "export should have 2 lines" "${EXPORT_FILE}" "2"
 
-    _assertFileContains "export file should have export line for RANDOM_VARIABLE" 'export RANDOM_VARIABLE=value-a' "${BUILD_DIR}/export"
-    _assertFileContains "export file should have export line for OTHER_VARIABLE" 'export OTHER_VARIABLE=value-b' "${BUILD_DIR}/export"
+    _assertFileContains "export file should have export line for RANDOM_VARIABLE" 'export RANDOM_VARIABLE=value-a' "${EXPORT_FILE}"
+    _assertFileContains "export file should have export line for OTHER_VARIABLE" 'export OTHER_VARIABLE=value-b' "${EXPORT_FILE}"
 }
 
 testExportVariablesShouldNotCreateExportFileWhenControlFileDoesntExist() {
     rm -f "${BUILD_DIR}/${ENV_BUILDPACK_CONTROL_FILE}"
-    exportVariables "${BUILD_DIR}" "${ENV_DIR}"
+    exportVariables "${BUILDPACK_HOME}" "${ENV_DIR}"
 
     EXISTS=0
-    [ -f "${BUILD_DIR}/export" ] && EXISTS=1
+    [ -f "${EXPORT_FILE}" ] && EXISTS=1
     assertEquals "export file should not exists" "0" "$EXISTS"
 }
 
