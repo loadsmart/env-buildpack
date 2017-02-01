@@ -1,4 +1,5 @@
 .SILENT:
+.PHONY: test
 
 .libs/heroku-buildpack-testrunner:
 	echo Downloading heroku-buildpack-test-runner
