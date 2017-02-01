@@ -28,6 +28,7 @@ exportVariable() {
     [ ! -f "${env_dir}/${variable_name}" ] && RETURN=1 && return
 
     echo "export ${variable_name}=$(cat "${env_dir}/$variable_name")" >> "${build_dir}/export"
+    echo "export ${variable_name}=$(cat "${env_dir}/$variable_name")"
     # shellcheck disable=SC2034
     RETURN=$?
 }
